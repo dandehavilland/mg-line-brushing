@@ -4,6 +4,7 @@ var gulp = require('gulp'),
   rimraf = require('gulp-rimraf'),
   concat = require('gulp-concat'),
   jshint = require('gulp-jshint'),
+  connect = require('gulp-connect'),
   testem = require('gulp-testem');
 
 // paths
@@ -64,4 +65,22 @@ gulp.task('test', function() {
     .pipe(testem({
       configFile: 'testem.json'
     }));
+});
+
+// Development server tasks
+var roots = ['dev', 'dist', 'src'],
+    watchables = roots.map(function(root) {
+        return root + '/**/*';
+    });
+
+gulp.task('dev:watch', function() { return gulp.watch(watchables, ['jshint', 'dev:reload']); });
+gulp.task('dev:reload', function() { return gulp.src(watchables).pipe(connect.reload()); });
+gulp.task('serve', ['jshint', 'dev:serve', 'dev:watch']);
+
+gulp.task('dev:serve', function() {
+    connect.server({
+        root: roots.concat(['bower_components']),
+        port: 4300,
+        livereload: true
+    });
 });

@@ -14,7 +14,7 @@
     ".DS_Store",
     ".git",
     ".gitignore",
-    "examples",
+    "dev",
     "gulp",
     "gulpfile.js",
     "index.js",
@@ -25,7 +25,10 @@
     "tests"
   ],
   "devDependencies": {
-    "metrics-graphics": "~2.1.0",
-    "qunit": "~1.17.1"
+    "metrics-graphics": "git://github.com/dandehavilland/metrics-graphics.git#addon-management",
+    "qunit": "~1.17.1",
+    "font-awesome": "~4.3.0",
+    "bootstrap": "~3.3.2",
+    "ace-builds": "~1.1.8"
   }
 }
