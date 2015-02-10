@@ -4,7 +4,7 @@
   } else if (typeof exports === 'object') {
     module.exports = factory(require('d3'), require('jquery'), require('MG'));
   } else {
-    root.Sample_exstension = factory(root.d3, root.jQuery, root.MG);
+    root.Mg_sample_extension = factory(root.d3, root.jQuery, root.MG);
   }
 }(this, function(d3, $, MG) {
 /**
@@ -16,7 +16,7 @@ function sampleChart(args) {
   this.init = function(args) {
     this.args = args;
     MG.chart_title(args);
-  }
+  };
 
   this.init(args);
 }
@@ -39,5 +39,5 @@ var defaults = {
 
 MG.register('sample-chart', sampleChart, defaults);
 
-return Sample_exstension;
+return ;
 }));

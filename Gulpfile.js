@@ -5,23 +5,28 @@ var gulp = require('gulp'),
   concat = require('gulp-concat'),
   jshint = require('gulp-jshint'),
   connect = require('gulp-connect'),
-  testem = require('gulp-testem');
+  testem = require('gulp-testem'),
+  replace = require('gulp-replace');
+
+var pjson = require('./package.json');
+
+var filename = pjson.name.replace(/-/g, '_');
 
 // paths
 var src = './src/js/',
   dist = './dist/',
-  jsFiles = [src + 'sample_extension.js'];
+  jsFiles = src + '**/*.js';
 
 gulp.task('default', ['jshint', 'test', 'build:js']);
 
 gulp.task('clean', function () {
-  return gulp.src(dist + '*', {read: false})
+  return gulp.src([dist + '*', 'tmp/*'], {read: false})
     .pipe(rimraf());
 });
 
 gulp.task('build:js', ['clean'], function () {
   return gulp.src(jsFiles)
-    .pipe(concat({path: 'sample_exstension.js'}))
+    .pipe(concat({path: filename + '.js'}))
     .pipe(umd(
         {
           dependencies:function() {
@@ -46,6 +51,9 @@ gulp.task('build:js', ['clean'], function () {
               global: 'MG',
               param: 'MG'
             }];
+          },
+          exports: function() {
+            return null;
           }
         }
     ))
@@ -68,18 +76,35 @@ gulp.task('test', function() {
 });
 
 // Development server tasks
-var roots = ['dev', 'dist', 'src'],
+var roots = ['src', 'dev'],
     watchables = roots.map(function(root) {
         return root + '/**/*';
     });
 
-gulp.task('dev:watch', function() { return gulp.watch(watchables, ['jshint', 'dev:reload']); });
-gulp.task('dev:reload', function() { return gulp.src(watchables).pipe(connect.reload()); });
-gulp.task('serve', ['jshint', 'dev:serve', 'dev:watch']);
+gulp.task('dev:watch', function() {
+  return gulp.watch(watchables, ['jshint', 'build:js', 'dev:reload']);
+});
 
-gulp.task('dev:serve', function() {
+gulp.task('dev:reload', function() {
+  return gulp.src(watchables).pipe(connect.reload());
+});
+
+gulp.task('serve', ['jshint', 'dev:setup', 'dev:serve', 'dev:watch']);
+
+gulp.task('dev:setup', ['dev:prepareEnv'], function() {
+  return gulp.src('tmp/serve/index.html')
+    .pipe(replace(/{{PACKAGE_NAME}}/g, filename))
+    .pipe(gulp.dest('tmp/serve'));
+});
+
+gulp.task('dev:prepareEnv', ['build:js'], function() {
+  return gulp.src(['dev/**/*.*', 'dist/**/*.*', 'bower_components/**/*.*'])
+    .pipe(gulp.dest('tmp/serve'));
+});
+
+gulp.task('dev:serve', ['dev:setup'], function() {
     connect.server({
-        root: roots.concat(['bower_components']),
+        root: 'tmp/serve',
         port: 4300,
         livereload: true
     });

@@ -1,4 +1,4 @@
-module('sample extension');
+module('sample chart');
 
 test('adds the title to the page', function() {
   var args = {
