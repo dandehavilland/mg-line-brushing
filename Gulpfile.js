@@ -6,16 +6,19 @@ var gulp = require('gulp'),
   jshint = require('gulp-jshint'),
   connect = require('gulp-connect'),
   testem = require('gulp-testem'),
-  replace = require('gulp-replace');
+  replace = require('gulp-replace'),
+  rename = require('gulp-rename'),
+  sass = require('gulp-sass');
 
 var pjson = require('./package.json');
 
 var filename = pjson.name.replace(/-/g, '_');
 
 // paths
-var src = './src/js/',
+var src = './src/',
   dist = './dist/',
-  jsFiles = src + '**/*.js';
+  jsFiles = src + 'js/**/*.js',
+  scssFiles = src + 'scss/**/*.scss';
 
 gulp.task('default', ['jshint', 'test', 'build:js']);
 
@@ -60,6 +63,14 @@ gulp.task('build:js', ['clean'], function () {
     .pipe(gulp.dest(dist));
 });
 
+// build css files from scss
+gulp.task('build:css', ['clean'], function () {
+  return gulp.src(scssFiles)
+    .pipe(sass())
+    .pipe(rename(filename + '.css'))
+    .pipe(gulp.dest(dist));
+});
+
 // Check source js files with jshint
 gulp.task('jshint', function () {
   return gulp.src(jsFiles)
@@ -82,14 +93,14 @@ var roots = ['src', 'dev'],
     });
 
 gulp.task('dev:watch', function() {
-  return gulp.watch(watchables, ['jshint', 'build:js', 'dev:reload']);
+  return gulp.watch(watchables, ['jshint', 'build:js', 'dev:setup', 'dev:reload']);
 });
 
 gulp.task('dev:reload', function() {
   return gulp.src(watchables).pipe(connect.reload());
 });
 
-gulp.task('serve', ['jshint', 'dev:setup', 'dev:serve', 'dev:watch']);
+gulp.task('serve', ['jshint', 'dev:serve', 'dev:watch']);
 
 gulp.task('dev:setup', ['dev:prepareEnv'], function() {
   return gulp.src('tmp/serve/index.html')
@@ -97,7 +108,7 @@ gulp.task('dev:setup', ['dev:prepareEnv'], function() {
     .pipe(gulp.dest('tmp/serve'));
 });
 
-gulp.task('dev:prepareEnv', ['build:js'], function() {
+gulp.task('dev:prepareEnv', ['build:js', 'build:css'], function() {
   return gulp.src(['dev/**/*.*', 'dist/**/*.*', 'bower_components/**/*.*'])
     .pipe(gulp.dest('tmp/serve'));
 });

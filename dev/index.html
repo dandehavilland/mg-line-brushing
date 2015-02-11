@@ -20,6 +20,7 @@
 
     <!-- dev start -->
     <script src='{{PACKAGE_NAME}}.js'></script>
+    <link href='{{PACKAGE_NAME}}.css' rel='stylesheet' type='text/css'>
     <!-- dev end -->
 
     <style>
@@ -165,12 +166,7 @@
         var mgKey = 'mg-dev',
             editor,
             persisted,
-            defaultCall = 'MG.data_graphic({\n'
-              + '  chart_type: "sample-chart",\n'
-              + '  target: ".result",\n'
-              + '  title: "This is a sample chart",\n'
-              + '  description: "There are no data.. but this is still a chart."\n'
-              + '});'
+            defaultCall = 'MG.data_graphic({});'
 
         persisted = JSON.parse(localStorage.getItem(mgKey), null, 2) || {};
 
