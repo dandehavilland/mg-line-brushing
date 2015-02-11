@@ -1,0 +1,11 @@
+.mg-brush-container {
+  cursor: crosshair; }
+
+.mg-brush-container.mg-brushing {
+  cursor: ew-resize; }
+
+.mg-brushed, .mg-brushed * {
+  cursor: zoom-out !important; }
+
+.mg-brush rect.mg-extent {
+  fill: rgba(0, 0, 0, 0.3); }
