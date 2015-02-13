@@ -65,6 +65,7 @@ function brushing() {
         isDragging = false;
         originX = d3.mouse(this)[0];
         svg.classed('mg-brushed', false);
+        svg.classed('mg-brushing-in-progress', true);
         extentRect.attr({
             x: d3.mouse(this)[0],
             opacity: 0,
@@ -93,6 +94,7 @@ function brushing() {
     // mouseup, finish area selection
     svg.on('mouseup', function() {
         mouseDown = false;
+        svg.classed('mg-brushing-in-progress', false);
 
         var xScale = args.scales.X,
             yScale = args.scales.Y,
