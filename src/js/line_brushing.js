@@ -2,15 +2,17 @@
   Brushing for line charts
 */
 
-var brushHistory = {};
+var brushHistory = {},
+  args;
 
 MG.add_hook('global.defaults', function(args) {
   args.brushing = true;
 });
 
 function brushing() {
-    var args = this.args,
-        chartContext = this;
+    var chartContext = this;
+
+    args = this.args;
 
     if (args.brushing === false) {
         return this;
@@ -21,10 +23,10 @@ function brushing() {
             brushed: false,
             steps: [],
             original: {
-                min_x: args.processed.min_x,
-                max_x: args.processed.max_x,
-                min_y: args.processed.min_y,
-                max_y: args.processed.max_y
+                min_x: +args.processed.min_x,
+                max_x: +args.processed.max_x,
+                min_y: +args.processed.min_y,
+                max_y: +args.processed.max_y
             }
         };
     }
@@ -97,8 +99,8 @@ function brushing() {
             extentX1 = extentX0 + (+extentRect.attr('width')),
             interval = get_brush_interval(args),
             offset = 0,
-            mapDtoX = function(d) { return d[args.x_accessor]; },
-            mapDtoY = function(d) { return d[args.y_accessor]; };
+            mapDtoX = function(d) { return +d[args.x_accessor]; },
+            mapDtoY = function(d) { return +d[args.y_accessor]; };
 
         // if we're zooming in: calculate the domain for x and y axes based on the selected rect
         if (isDragging) {
@@ -158,7 +160,6 @@ function brushing() {
                 xScale.domain(xBounds);
                 yScale.domain(yBounds);
             } else {
-                rollover.classed('mg-brushing', false);
                 brushHistory[args.target].brushed = false;
 
                 delete args.brushed_max_x;
@@ -180,13 +181,18 @@ function brushing() {
 
         if (xBounds[0] < xBounds[1]) {
             // trigger the brushing callback
+
+            var step = {
+                min_x: xBounds[0],
+                max_x: xBounds[1],
+                min_y: yBounds[0],
+                max_y: yBounds[1]
+            };
+
+            brushHistory[args.target].current = step;
+
             if (args.after_brushing) {
-                args.after_brushing.apply(this, [{
-                    min_x: xBounds[0],
-                    max_x: xBounds[1],
-                    min_y: yBounds[0],
-                    max_y: yBounds[1]
-                }]);
+                args.after_brushing.apply(this, [step]);
             }
         }
 
@@ -229,6 +235,30 @@ function afterRollover(args) {
 }
 
 MG.add_hook('line.after_rollover', afterRollover);
+
+function setBrushAsBase(target) {
+  var svg = d3.select(target).select('svg'),
+      current,
+      history = brushHistory[target];
+
+  svg.classed('mg-brushed', false);
+
+  if (history) {
+    history.brushed = false;
+
+    current = history.current;
+    history.original = current;
+
+    args.min_x = current.min_x;
+    args.max_x = current.max_x;
+    args.min_y = current.min_y;
+    args.max_y = current.max_y;
+
+    history.steps = [];
+  }
+}
+
+MG.set_brush_as_base = setBrushAsBase;
 
 /* helpers */
 function get_brush_interval(args) {
