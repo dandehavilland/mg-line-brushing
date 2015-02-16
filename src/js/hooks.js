@@ -84,6 +84,7 @@ function brushing() {
         mouseDown = false,
         originX,
         svg = d3.select(args.target).select('svg'),
+        body = d3.select('body'),
         rollover = svg.select('.mg-rollover-rect, .mg-voronoi'),
         brushingGroup,
         extentRect;
@@ -134,7 +135,7 @@ function brushing() {
     });
 
     // mouseup, finish area selection
-    svg.on('mouseup', function() {
+    body.on('mouseup', function() {
         mouseDown = false;
         svg.classed('mg-brushing-in-progress', false);
 
