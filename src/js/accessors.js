@@ -2,7 +2,7 @@
   2. accessors
 */
 
-MG.brushing = {
+MG.line_brushing = {
   set_brush_as_base: function(target) {
     var svg = d3.select(target).select('svg'),
         current,
