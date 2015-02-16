@@ -1,5 +1,54 @@
+/* helpers */
+function get_brush_interval(args) {
+    var resolution = args.brushing_interval,
+        interval;
+
+    if (!resolution) {
+        if (args.time_series) {
+            resolution = d3.time.day;
+        } else {
+            resolution = 1;
+        }
+    }
+
+    // work with N as integer
+    if (typeof resolution === 'number') {
+        interval = {
+            round: function(val) {
+                return resolution * Math.round(val / resolution);
+            },
+            offset: function(val, count) {
+                return val + (resolution * count);
+            }
+        };
+    }
+    // work with d3.time.[interval]
+    else if (typeof resolution.round === 'function'
+             && typeof resolution.offset === 'function' ) {
+        interval = resolution;
+    }
+    else {
+        console.warn('The `brushing_interval` provided is invalid. It must be either a number or expose both `round` and `offset` methods');
+    }
+
+    return interval;
+}
+
+function is_within_bounds(datum, args) {
+    var x = +datum[args.x_accessor],
+        y = +datum[args.y_accessor];
+
+    return x >= (+args.processed.min_x || x)
+        && x <= (+args.processed.max_x || x)
+        && y >= (+args.processed.min_y || y)
+        && y <= (+args.processed.max_y || y);
+}
+
+
 /**
   Brushing for line charts
+
+  1. hooks
 */
 
 var brushHistory = {},
@@ -235,73 +284,3 @@ function afterRollover(args) {
 }
 
 MG.add_hook('line.after_rollover', afterRollover);
-
-function setBrushAsBase(target) {
-  var svg = d3.select(target).select('svg'),
-      current,
-      history = brushHistory[target];
-
-  svg.classed('mg-brushed', false);
-
-  if (history) {
-    history.brushed = false;
-
-    current = history.current;
-    history.original = current;
-
-    args.min_x = current.min_x;
-    args.max_x = current.max_x;
-    args.min_y = current.min_y;
-    args.max_y = current.max_y;
-
-    history.steps = [];
-  }
-}
-
-MG.set_brush_as_base = setBrushAsBase;
-
-/* helpers */
-function get_brush_interval(args) {
-    var resolution = args.brushing_interval,
-        interval;
-
-    if (!resolution) {
-        if (args.time_series) {
-            resolution = d3.time.day;
-        } else {
-            resolution = 1;
-        }
-    }
-
-    // work with N as integer
-    if (typeof resolution === 'number') {
-        interval = {
-            round: function(val) {
-                return resolution * Math.round(val / resolution);
-            },
-            offset: function(val, count) {
-                return val + (resolution * count);
-            }
-        };
-    }
-    // work with d3.time.[interval]
-    else if (typeof resolution.round === 'function'
-             && typeof resolution.offset === 'function' ) {
-        interval = resolution;
-    }
-    else {
-        console.warn('The `brushing_interval` provided is invalid. It must be either a number or expose both `round` and `offset` methods');
-    }
-
-    return interval;
-}
-
-function is_within_bounds(datum, args) {
-    var x = +datum[args.x_accessor],
-        y = +datum[args.y_accessor];
-
-    return x >= (+args.processed.min_x || x)
-        && x <= (+args.processed.max_x || x)
-        && y >= (+args.processed.min_y || y)
-        && y <= (+args.processed.max_y || y);
-}
