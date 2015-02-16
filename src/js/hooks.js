@@ -135,7 +135,7 @@ function brushing() {
     });
 
     // mouseup, finish area selection
-    body.on('mouseup', function() {
+    svg.on('mouseup', function() {
         mouseDown = false;
         svg.classed('mg-brushing-in-progress', false);
 
