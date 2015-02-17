@@ -198,57 +198,62 @@ function brushing() {
         }
         // if we're using out: use all of the data
         else {
-            var previousBrush = brushHistory[args.target].steps.pop();
-            if (previousBrush) {
-                args.brushed_max_x = previousBrush.max_x;
-                args.brushed_min_x = previousBrush.min_x;
-                args.brushed_max_y = previousBrush.max_y;
-                args.brushed_min_y = previousBrush.min_y;
+            if (brushHistory[args.target].brushed) {
+                var previousBrush = brushHistory[args.target].steps.pop();
+                if (previousBrush) {
+                    args.brushed_max_x = previousBrush.max_x;
+                    args.brushed_min_x = previousBrush.min_x;
+                    args.brushed_max_y = previousBrush.max_y;
+                    args.brushed_min_y = previousBrush.min_y;
 
-                xBounds = [args.brushed_min_x, args.brushed_max_x];
-                yBounds = [args.brushed_min_y, args.brushed_max_y];
-                xScale.domain(xBounds);
-                yScale.domain(yBounds);
-            } else {
-                brushHistory[args.target].brushed = false;
+                    xBounds = [args.brushed_min_x, args.brushed_max_x];
+                    yBounds = [args.brushed_min_y, args.brushed_max_y];
+                    xScale.domain(xBounds);
+                    yScale.domain(yBounds);
+                } else {
+                    brushHistory[args.target].brushed = false;
 
-                delete args.brushed_max_x;
-                delete args.brushed_min_x;
-                delete args.brushed_max_y;
-                delete args.brushed_min_y;
+                    delete args.brushed_max_x;
+                    delete args.brushed_min_x;
+                    delete args.brushed_max_y;
+                    delete args.brushed_min_y;
 
-                xBounds = [
-                    brushHistory[args.target].original.min_x,
-                    brushHistory[args.target].original.max_x
-                ];
+                    xBounds = [
+                        brushHistory[args.target].original.min_x,
+                        brushHistory[args.target].original.max_x
+                    ];
 
-                yBounds = [
-                    brushHistory[args.target].original.min_y,
-                    brushHistory[args.target].original.max_y
-                ];
+                    yBounds = [
+                        brushHistory[args.target].original.min_y,
+                        brushHistory[args.target].original.max_y
+                    ];
+                }
             }
         }
 
-        if (xBounds[0] < xBounds[1]) {
-            // trigger the brushing callback
+        // has anything changed?
+        if (xBounds && yBounds) {
+            if (xBounds[0] < xBounds[1]) {
+                // trigger the brushing callback
 
-            var step = {
-                min_x: xBounds[0],
-                max_x: xBounds[1],
-                min_y: yBounds[0],
-                max_y: yBounds[1]
-            };
+                var step = {
+                    min_x: xBounds[0],
+                    max_x: xBounds[1],
+                    min_y: yBounds[0],
+                    max_y: yBounds[1]
+                };
 
-            brushHistory[args.target].current = step;
+                brushHistory[args.target].current = step;
 
-            if (args.after_brushing) {
-                args.after_brushing.apply(this, [step]);
+                if (args.after_brushing) {
+                    args.after_brushing.apply(this, [step]);
+                }
             }
-        }
 
-        // redraw the chart
-        if (!args.brushing_manual_redraw) {
-           MG.data_graphic(args);
+            // redraw the chart
+            if (!args.brushing_manual_redraw) {
+               MG.data_graphic(args);
+            }
         }
     });
 
