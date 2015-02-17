@@ -101,6 +101,7 @@ var brushHistory = {},
 
 MG.add_hook('global.defaults', function(args) {
   args.brushing = true;
+  args.brushing_history = true;
 });
 
 function brushing() {
@@ -241,8 +242,8 @@ function brushing() {
             args.brushed_max_y = yBounds[1] * 1.1;
             yScale.domain(yBounds);
         }
-        // if we're using out: use all of the data
-        else {
+        // zooming out on click, maintaining the step history
+        else if (args.brushing_history) {
             if (brushHistory[args.target].brushed) {
                 var previousBrush = brushHistory[args.target].steps.pop();
                 if (previousBrush) {
