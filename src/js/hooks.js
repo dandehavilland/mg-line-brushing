@@ -284,7 +284,7 @@ function processYAxis(args) {
 MG.add_hook('y_axis.process_min_max', processYAxis);
 
 function afterRollover(args) {
-  if (brushHistory[args.target] && brushHistory[args.target].brushed) {
+  if (args.brushing_history && brushHistory[args.target] && brushHistory[args.target].brushed) {
     var svg = d3.select(args.target).select('svg');
     svg.classed('mg-brushed', true);
   }
