@@ -1,6 +1,10 @@
 {
   "name": "mg-line-brushing",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/dandehavilland/mg-line-brushing.git",
+  },
   "authors": [
     "Dan de Havilland <dan@dandehavilland.com>"
   ],
