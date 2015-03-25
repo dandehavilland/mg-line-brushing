@@ -55,11 +55,12 @@ var brushHistory = {},
   args;
 
 MG.add_hook('global.defaults', function(args) {
-  args.brushing = true;
-  args.brushing_history = true;
-
-  // currently not compatible with the voroni rollover - raises some exceptions deeper in D3
-  args.aggregate_rollover = true;
+  // enable brushing unless it's explicitly disabled
+  args.brushing = args.brushing !== false;
+  if (args.brushing) {
+    args.brushing_history = args.brushing_history !== false;
+    args.aggregate_rollover = true;
+  }
 });
 
 function brushing() {
