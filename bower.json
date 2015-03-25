@@ -26,7 +26,8 @@
     "tests",
     "**/.*",
     "bower_components",
-    "test"
+    "test",
+    "README.md"
   ],
   "devDependencies": {
     "metrics-graphics": "git://github.com/dandehavilland/metrics-graphics.git#hooks",

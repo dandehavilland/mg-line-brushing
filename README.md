@@ -20,7 +20,11 @@ Install using bower (not yet published):
 
 Include `dist/mg_line_brushing.js` in your build, or include it in your HTML:
 
-- `<script src="bower_components/dist/mg_line_brushing.js"></script>`
+- `<script src="bower_components/mg_line_brushing/dist/mg_line_brushing.js"></script>`
+
+Import the default styles from `dist/mg_line_brushing.css`, or create your own:
+
+- `<link rel="stylesheet" href="bower_components/mg-line-brushing/dist/mg_line_brushing.css" type="text/css" />`
 
 
 
