@@ -144,7 +144,8 @@ function brushing() {
         mouseDown = false;
         svg.classed('mg-brushing-in-progress', false);
 
-        var xScale = args.scales.X,
+        var args = chartContext.args,
+            xScale = args.scales.X,
             yScale = args.scales.Y,
             flatData = [].concat.apply([], args.data),
             boundedData,
