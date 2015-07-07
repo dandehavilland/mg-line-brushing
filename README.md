@@ -2,7 +2,7 @@
 
 A extension to metrics-graphics which adds step-wise brushing support to line charts.
 
-**Note:** the addon system is still under heavy development. This project will currently only work with [my pending PR](https://github.com/mozilla/metrics-graphics/pull/351) for metrics-graphics.
+Requires metrics-graphics >= v2.5
 
 ### Caveats
 
@@ -38,9 +38,9 @@ Import the default styles from `dist/mg_line_brushing.css`, or create your own:
 
 ### Requirements
 
-- [Node.JS](http://nodejs.org/)
-- [bower](http://bower.io) or [io.js](https://iojs.org/)
-- [metrics-graphics](http://metricsgraphicsjs.org/)
+- [Node.JS](http://nodejs.org/) or [io.js](https://iojs.org/)
+- [bower](http://bower.io)
+- [metrics-graphics](http://metricsgraphicsjs.org/) `>= v2.5`
 
 
 ### Contributing
