@@ -14,9 +14,9 @@ so additional work is required for that. (A PR is more than welcome!)
 
 ### Usage
 
-Install using bower (not yet published):
+Install using bower:
 
-- `bower install dandehavilland/mg-line-brushing --save`
+- `bower install mg-line-brushing --save`
 
 Include `dist/mg_line_brushing.js` in your build, or include it in your HTML:
 
