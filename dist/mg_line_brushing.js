@@ -218,10 +218,14 @@ function brushing() {
             // is there at least one data point in the chosen selection? if not, increase the range until there is.
             var iterations = 0;
             while (boundedData.length === 0 && iterations <= flatData.length) {
-                args.brushed_min_x = interval.round(xScale.invert(extentX0));
-                args.brushed_max_x = Math.max(
-                    interval.offset(args.min_x, 1),
-                    interval.round(xScale.invert(extentX1)));
+
+		var xValX0 = xScale.invert(extendX0);
+		var xValX1 = xScale.invert(extendX1);
+		xValX0 = xValX0 instanceof Date ? xValX0 : interval.round(xValX0);
+		xValX1 = xValX1 instanceof Date ? xValX1 : interval.round(xValX1);
+
+                args.brushed_min_x = xValX0;
+                args.brushed_max_x = Math.max(interval.offset(args.min_x, 1), xValX1);
 
                 boundedData = flatData.filter(function(d) {
                     var val = d[args.x_accessor];
