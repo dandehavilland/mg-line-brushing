@@ -50,7 +50,7 @@ function get_brush_interval(args) {
 
     if (!resolution) {
         if (args.time_series) {
-            resolution = d3.timeDay;
+            resolution = d3.time.day;
         } else {
             resolution = 1;
         }
@@ -145,9 +145,11 @@ function brushing() {
         .classed('mg-brush', true);
 
     extentRect = brushingGroup.append('rect')
-        .attr('opacity', 0)
-        .attr('y', args.top)
-        .attr('height', args.height - args.bottom - args.top - args.buffer)
+        .attr({
+            opacity: 0,
+            y: args.top,
+            height: args.height - args.bottom - args.top - args.buffer
+        })
         .classed('mg-extent', true);
 
     // mousedown, start area selection
@@ -174,10 +176,11 @@ function brushing() {
                 newX = Math.min(originX, mouseX),
                 width = Math.max(originX, mouseX) - newX;
 
-            extentRect
-                .attr('x', newX)
-                .attr('width', width)
-                .attr('opacity', 1);
+            extentRect.attr({
+                x: newX,
+                width: width,
+                opacity: 1
+            });
         }
     });
 
@@ -186,7 +189,8 @@ function brushing() {
         mouseDown = false;
         svg.classed('mg-brushing-in-progress', false);
 
-        var xScale = args.scales.X,
+        var args = chartContext.args,
+            xScale = args.scales.X,
             yScale = args.scales.Y,
             flatData = [].concat.apply([], args.data),
             boundedData,
@@ -219,10 +223,10 @@ function brushing() {
             var iterations = 0;
             while (boundedData.length === 0 && iterations <= flatData.length) {
 
-		var xValX0 = xScale.invert(extendX0);
-		var xValX1 = xScale.invert(extendX1);
-		xValX0 = xValX0 instanceof Date ? xValX0 : interval.round(xValX0);
-		xValX1 = xValX1 instanceof Date ? xValX1 : interval.round(xValX1);
+                var xValX0 = xScale.invert(extentX0);
+                var xValX1 = xScale.invert(extentX1);
+                xValX0 = xValX0 instanceof Date ? xValX0 : interval.round(xValX0);
+                xValX1 = xValX1 instanceof Date ? xValX1 : interval.round(xValX1);
 
                 args.brushed_min_x = xValX0;
                 args.brushed_max_x = Math.max(interval.offset(args.min_x, 1), xValX1);
